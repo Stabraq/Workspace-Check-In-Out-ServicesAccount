@@ -1,67 +1,61 @@
+import { axiosAuth } from '../api/googleSheetsAPI';
 const SHEET_ID = process.env.REACT_APP_SHEET_ID;
 
-export const executeValuesUpdate = (val) => {
-  return window.gapi.client.sheets.spreadsheets.values
-    .update({
-      spreadsheetId: SHEET_ID,
-      range: 'Clients!H2',
-      valueInputOption: 'USER_ENTERED',
-      resource: {
+export const executeValuesUpdate = async (val) => {
+  try {
+    const googleSheetsAPI = await axiosAuth();
+
+    const range = 'Clients!H2';
+    const valueInputOption = 'USER_ENTERED';
+    const response = await googleSheetsAPI.put(
+      `${SHEET_ID}/values/${range}`,
+      {
         // majorDimension: 'COLUMNS',
         values: [[`'${val}`]],
       },
-    })
-    .then(
-      (response) => {
-        // Handle the results here (response.result has the parsed body).
-        console.log('Response', response);
-      },
-      (err) => {
-        console.error('Execute error', err);
-      }
+      { params: { valueInputOption: valueInputOption } }
     );
+
+    console.log('Response', response);
+  } catch (err) {
+    console.error('Execute error', err);
+  }
 };
 
 // Make sure the client is loaded and sign-in is complete before calling this method.
-export const executeBatchUpdateCutPaste = (destSheetId) => {
-  return window.gapi.client.sheets.spreadsheets
-    .batchUpdate({
-      spreadsheetId: SHEET_ID,
-      alt: 'json',
-      resource: {
-        requests: [
-          {
-            cutPaste: {
-              source: {
-                sheetId: 1187395242,
-              },
-              destination: {
-                sheetId: destSheetId,
-              },
-              pasteType: 'PASTE_NORMAL',
+export const executeBatchUpdateCutPaste = async (destSheetId) => {
+  try {
+    const googleSheetsAPI = await axiosAuth();
+    const response = await googleSheetsAPI.post(`${SHEET_ID}:batchUpdate`, {
+      requests: [
+        {
+          cutPaste: {
+            source: {
+              sheetId: 1187395242,
             },
+            destination: {
+              sheetId: destSheetId,
+            },
+            pasteType: 'PASTE_NORMAL',
           },
-        ],
-      },
-    })
-    .then(
-      (response) => {
-        // Handle the results here (response.result has the parsed body).
-        console.log('Response', response);
-      },
-      (err) => {
-        console.error('Execute error', err);
-      }
-    );
+        },
+      ],
+    });
+    console.log('Response', response);
+  } catch (err) {
+    console.error('Execute error', err);
+  }
 };
 
-export const executeValuesAppend = (userData) => {
-  return window.gapi.client.sheets.spreadsheets.values
-    .append({
-      spreadsheetId: SHEET_ID,
-      range: 'Clients!A3',
-      valueInputOption: 'RAW',
-      resource: {
+export const executeValuesAppend = async (userData) => {
+  try {
+    const googleSheetsAPI = await axiosAuth();
+
+    const range = 'Clients!A3';
+    const valueInputOption = 'RAW';
+    const response = await googleSheetsAPI.post(
+      `${SHEET_ID}/values/${range}:append`,
+      {
         majorDimension: 'COLUMNS',
         values: [
           // [new Date().toLocaleString()],
@@ -71,25 +65,24 @@ export const executeValuesAppend = (userData) => {
           [userData.membership],
         ],
       },
-    })
-    .then(
-      (response) => {
-        // Handle the results here (response.result has the parsed body).
-        console.log('Response', response);
-      },
-      (err) => {
-        console.error('Execute error', err);
-      }
+      { params: { valueInputOption: valueInputOption } }
     );
+
+    console.log('Response', response);
+  } catch (err) {
+    console.error('Execute error', err);
+  }
 };
 
-export const executeValuesAppendCheckIn = (checkInOut, valuesMatched) => {
-  return window.gapi.client.sheets.spreadsheets.values
-    .append({
-      spreadsheetId: SHEET_ID,
-      range: 'Data!A2',
-      valueInputOption: 'USER_ENTERED',
-      resource: {
+export const executeValuesAppendCheckIn = async (checkInOut, valuesMatched) => {
+  try {
+    const googleSheetsAPI = await axiosAuth();
+
+    const range = 'Data!A2';
+    const valueInputOption = 'USER_ENTERED';
+    const response = await googleSheetsAPI.post(
+      `${SHEET_ID}/values/${range}:append`,
+      {
         majorDimension: 'COLUMNS',
         values: [
           [valuesMatched[1]],
@@ -100,29 +93,28 @@ export const executeValuesAppendCheckIn = (checkInOut, valuesMatched) => {
           [new Date().toLocaleTimeString()],
         ],
       },
-    })
-    .then(
-      (response) => {
-        // Handle the results here (response.result has the parsed body).
-        console.log('Response', response);
-      },
-      (err) => {
-        console.error('Execute error', err);
-      }
+      { params: { valueInputOption: valueInputOption } }
     );
+
+    console.log('Response', response);
+  } catch (err) {
+    console.error('Execute error', err);
+  }
 };
 
-export const executeValuesAppendCheckOut = (
+export const executeValuesAppendCheckOut = async (
   checkInOut,
   rowNumber,
   membership
 ) => {
-  return window.gapi.client.sheets.spreadsheets.values
-    .append({
-      spreadsheetId: SHEET_ID,
-      range: `Data!G${rowNumber}`,
-      valueInputOption: 'USER_ENTERED',
-      resource: {
+  try {
+    const googleSheetsAPI = await axiosAuth();
+
+    const range = `Data!G${rowNumber}`;
+    const valueInputOption = 'USER_ENTERED';
+    const response = await googleSheetsAPI.post(
+      `${SHEET_ID}/values/${range}:append`,
+      {
         majorDimension: 'COLUMNS',
         values: [
           [new Date().toLocaleTimeString()],
@@ -134,72 +126,70 @@ export const executeValuesAppendCheckOut = (
           [checkInOut],
         ],
       },
-    })
-    .then(
-      (response) => {
-        // Handle the results here (response.result has the parsed body).
-        console.log('Response', response);
-      },
-      (err) => {
-        console.error('Execute error', err);
-      }
+      { params: { valueInputOption: valueInputOption } }
     );
+
+    console.log('Response', response);
+  } catch (err) {
+    console.error('Execute error', err);
+  }
 };
 
 export const executeBatchUpdateAddSheet = async (sheetDate) => {
   try {
-    const response = await window.gapi.client.sheets.spreadsheets.batchUpdate({
-      spreadsheetId: SHEET_ID,
-      resource: {
-        requests: [
-          {
-            addSheet: {
-              properties: {
-                title: sheetDate,
-                rightToLeft: true,
-              },
+    const googleSheetsAPI = await axiosAuth();
+    const response = await googleSheetsAPI.post(`${SHEET_ID}:batchUpdate`, {
+      requests: [
+        {
+          addSheet: {
+            properties: {
+              title: sheetDate,
+              rightToLeft: true,
             },
           },
-        ],
-      },
+        },
+      ],
     });
+
     console.log(
       'Response',
-      response.result.replies[0].addSheet.properties.sheetId
+      response.data.replies[0].addSheet.properties.sheetId
     );
-    return response.result.replies[0].addSheet.properties.sheetId;
+    return response.data.replies[0].addSheet.properties.sheetId;
   } catch (err) {
-    console.error('Execute error', err.result.error.message);
+    console.error('Execute error', err.data.error.message);
     return false;
   }
 };
 
 export const executeValuesAppendAddSheet = async () => {
   try {
-    const response = await window.gapi.client.sheets.spreadsheets.values.append(
+    const googleSheetsAPI = await axiosAuth();
+
+    const range = 'Data!A1';
+    const valueInputOption = 'USER_ENTERED';
+    const response = await googleSheetsAPI.post(
+      `${SHEET_ID}/values/${range}:append`,
       {
-        spreadsheetId: SHEET_ID,
-        range: 'Data!A1',
-        valueInputOption: 'USER_ENTERED',
-        resource: {
-          majorDimension: 'COLUMNS',
-          values: [
-            ['Name'],
-            ['Mobile No.'],
-            ['E-Mail'],
-            ['Membership'],
-            ['Check In'],
-            ['CheckIn Time'],
-            ['CheckOut Time'],
-            ['Duration'],
-            ['Approx. Duration'],
-            ['Cost'],
-            ['Check Out'],
-            [new Date().toLocaleDateString()],
-          ],
-        },
-      }
+        majorDimension: 'COLUMNS',
+        values: [
+          ['Name'],
+          ['Mobile No.'],
+          ['E-Mail'],
+          ['Membership'],
+          ['Check In'],
+          ['CheckIn Time'],
+          ['CheckOut Time'],
+          ['Duration'],
+          ['Approx. Duration'],
+          ['Cost'],
+          ['Check Out'],
+          [new Date().toLocaleDateString()],
+        ],
+      },
+      { params: { valueInputOption: valueInputOption } }
     );
+
     console.log('Response', response);
   } catch (err) {
     console.error('Execute error', err);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { authenticate, loadClient } from './auth';
+import { axiosAuth } from '../api/googleSheetsAPI';
 import {
   executeValuesUpdate,
   executeValuesAppend,
@@ -22,7 +22,6 @@ import '../styles.css';
 import { Modal } from 'bootstrap';
 
 const SHEET_ID = process.env.REACT_APP_SHEET_ID;
-const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
 
 const hoursMinSecs = { hours: 0, minutes: 59, seconds: 0 };
 
@@ -52,8 +51,6 @@ class App extends React.Component {
 
   // Function to Add new Sheet for new day
   getNewSheetId = async () => {
-    await authenticate();
-    await loadClient();
     const newSheetId = await executeBatchUpdateAddSheet(
       this.state.sheetDate[0]
     );
@@ -98,12 +95,10 @@ class App extends React.Component {
     // Show LoadingSpinner
     this.setState({ loading: true });
 
-    // Authenticate
+    // First Load
     if (this.state.firstLoad) {
-      await authenticate();
       this.setState({ firstLoad: false });
     }
-    await loadClient();
 
     // Check to Add new Sheet for new day
     await this.getSheetValuesSheetDate();
@@ -171,10 +166,9 @@ class App extends React.Component {
   onNewUserFormSubmit = async (userData) => {
     console.log(userData);
     if (this.state.firstLoad) {
-      await authenticate();
       this.setState({ firstLoad: false });
     }
-    await loadClient();
+
     await executeValuesAppend(userData);
     this.setState({
       modalBody: (
@@ -300,16 +294,6 @@ class App extends React.Component {
   };
 
   loadApiScript = async () => {
-    const script = document.createElement('script');
-    script.src = 'https://apis.google.com/js/api.js';
-    document.body.appendChild(script);
-
-    script.onload = async () => {
-      await window.gapi.load('client:auth2', async () => {
-        await window.gapi.auth2.init({ client_id: CLIENT_ID });
-      });
-    };
-
     this.setState({ firstLoad: true });
   };
 
@@ -319,13 +303,13 @@ class App extends React.Component {
 
   getSheetValues = async () => {
     try {
-      const response = await window.gapi.client.sheets.spreadsheets.values.get({
-        spreadsheetId: SHEET_ID,
-        range: 'Clients!I2',
-      });
-      // Handle the results here (response.result has the parsed body).
-      console.log('Response', response.result.values[0]);
-      this.setState({ numberExists: response.result.values[0] });
+      const googleSheetsAPI = await axiosAuth();
+
+      const range = 'Clients!I2';
+      const response = await googleSheetsAPI.get(`${SHEET_ID}/values/${range}`);
+
+      console.log('Response', response.data.values[0]);
+      this.setState({ numberExists: response.data.values[0] });
     } catch (err) {
       console.error('Execute error', err);
     }
@@ -333,13 +317,13 @@ class App extends React.Component {
 
   getSheetValuesMatched = async () => {
     try {
-      const response = await window.gapi.client.sheets.spreadsheets.values.get({
-        spreadsheetId: SHEET_ID,
-        range: 'Clients!J2:Q2',
-      });
-      // Handle the results here (response.result has the parsed body).
-      console.log('Response', response.result.values[0]);
-      this.setState({ valuesMatched: response.result.values[0] });
+      const googleSheetsAPI = await axiosAuth();
+
+      const range = 'Clients!J2:Q2';
+      const response = await googleSheetsAPI.get(`${SHEET_ID}/values/${range}`);
+
+      console.log('Response', response.data.values[0]);
+      this.setState({ valuesMatched: response.data.values[0] });
     } catch (err) {
       console.error('Execute error', err);
     }
@@ -347,17 +331,17 @@ class App extends React.Component {
 
   getSheetValuesDuration = async () => {
     try {
-      const response = await window.gapi.client.sheets.spreadsheets.values.get({
-        spreadsheetId: SHEET_ID,
-        range: `Data!H${this.state.valuesMatched[6]}:J${this.state.valuesMatched[6]}`,
-      });
-      // Handle the results here (response.result has the parsed body).
-      const data = await response.result.values[0];
-      console.log('Response', response.result.values[0]);
+      const googleSheetsAPI = await axiosAuth();
+
+      const range = `Data!H${this.state.valuesMatched[6]}:J${this.state.valuesMatched[6]}`;
+      const response = await googleSheetsAPI.get(`${SHEET_ID}/values/${range}`);
+
+      const resData = await response.data.values[0];
+      console.log('Response', response.data.values[0]);
       this.setState({
-        duration: data[0],
-        approxDuration: data[1],
-        cost: data[2],
+        duration: resData[0],
+        approxDuration: resData[1],
+        cost: resData[2],
       });
     } catch (err) {
       console.error('Execute error', err);
@@ -366,13 +350,13 @@ class App extends React.Component {
 
   getSheetValuesSheetDate = async () => {
     try {
-      const response = await window.gapi.client.sheets.spreadsheets.values.get({
-        spreadsheetId: SHEET_ID,
-        range: 'Data!L1',
-      });
-      // Handle the results here (response.result has the parsed body).
-      console.log('Response', response.result.values[0]);
-      this.setState({ sheetDate: response.result.values[0] });
+      const googleSheetsAPI = await axiosAuth();
+
+      const range = 'Data!L1';
+      const response = await googleSheetsAPI.get(`${SHEET_ID}/values/${range}`);
+
+      console.log('Response', response.data.values[0]);
+      this.setState({ sheetDate: response.data.values[0] });
     } catch (err) {
       console.error('Execute error', err);
     }
