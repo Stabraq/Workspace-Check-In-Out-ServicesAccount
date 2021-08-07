@@ -44,7 +44,7 @@ footer {
 
 .shrink {
   width: 70px;
-  height: 80px;
+  height: 76px;
   transition: 0.5s ease;
 }
 
@@ -61,11 +61,14 @@ footer {
 @media screen and (max-width: 700px) {
   .user-img {
     width: 60px;
-    height: 70px;
+    height: 65px;
   }
 
   .shrink {
     width: 20px;
-    height: 30px;
+    height: 22px;
+  }
+  .container-fluid{
+    padding: 0px;
   }
 }
