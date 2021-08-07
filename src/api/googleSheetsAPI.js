@@ -1,10 +1,11 @@
 import axios from 'axios';
-import { authenticate } from '../components/auth';
+// import { authenticate } from '../components/auth';
 
-export const axiosAuth = async () => {
+export const axiosAuth = async (ACCESS_TOKEN) => {
   try {
-    const doc = await authenticate();
-    const ACCESS_TOKEN = await doc.jwtClient.credentials.access_token;
+    // const doc = await authenticate();
+    // const ACCESS_TOKEN = await doc.jwtClient.credentials.access_token;
+
     return axios.create({
       baseURL: `https://sheets.googleapis.com/v4/spreadsheets/`,
       headers: {

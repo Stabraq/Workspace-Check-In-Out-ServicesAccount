@@ -1,8 +1,9 @@
 import React from 'react';
+import { authenticate } from './auth';
 import { axiosAuth } from '../api/googleSheetsAPI';
 import {
   executeValuesUpdate,
-  executeValuesAppend,
+  executeValuesAppendNewUserData,
   executeValuesAppendCheckIn,
   executeValuesAppendCheckOut,
   executeBatchUpdateAddSheet,
@@ -47,19 +48,24 @@ class App extends React.Component {
     shrink: false,
     showMain: false,
     shrinkLogo: false,
+    access_token: '',
   };
 
   // Function to Add new Sheet for new day
   getNewSheetId = async () => {
     const newSheetId = await executeBatchUpdateAddSheet(
-      this.state.sheetDate[0]
+      this.state.sheetDate[0],
+      this.state.access_token
     );
     if (newSheetId === false) return;
     this.setState({
       newSheetId: newSheetId,
     });
-    await executeBatchUpdateCutPaste(this.state.newSheetId);
-    await executeValuesAppendAddSheet();
+    await executeBatchUpdateCutPaste(
+      this.state.newSheetId,
+      this.state.access_token
+    );
+    await executeValuesAppendAddSheet(this.state.access_token);
   };
 
   showMainPage = async () => {
@@ -112,7 +118,7 @@ class App extends React.Component {
     }
 
     // Search for the user by mobile number
-    await executeValuesUpdate(term);
+    await executeValuesUpdate(term, this.state.access_token);
     await this.getSheetValues();
     if (this.state.numberExists.includes('Exists')) {
       await this.getSheetValuesMatched();
@@ -169,7 +175,7 @@ class App extends React.Component {
       this.setState({ firstLoad: false });
     }
 
-    await executeValuesAppend(userData);
+    await executeValuesAppendNewUserData(userData, this.state.access_token);
     this.setState({
       modalBody: (
         <div className='text-center'>
@@ -207,7 +213,11 @@ class App extends React.Component {
         myModal.show();
         return;
       } else {
-        await executeValuesAppendCheckIn(checkInOut, this.state.valuesMatched);
+        await executeValuesAppendCheckIn(
+          checkInOut,
+          this.state.valuesMatched,
+          this.state.access_token
+        );
         this.setState({
           modalBody: (
             <div>
@@ -264,7 +274,8 @@ class App extends React.Component {
         await executeValuesAppendCheckOut(
           checkInOut,
           this.state.valuesMatched[6],
-          this.state.valuesMatched[3]
+          this.state.valuesMatched[3],
+          this.state.access_token
         );
         await this.getSheetValuesDuration();
         this.setState({
@@ -294,7 +305,10 @@ class App extends React.Component {
   };
 
   loadApiScript = async () => {
-    this.setState({ firstLoad: true });
+    const doc = await authenticate();
+    const ACCESS_TOKEN = await doc.jwtClient.credentials.access_token;
+
+    this.setState({ firstLoad: true, access_token: ACCESS_TOKEN });
   };
 
   componentDidMount() {
@@ -303,7 +317,7 @@ class App extends React.Component {
 
   getSheetValues = async () => {
     try {
-      const googleSheetsAPI = await axiosAuth();
+      const googleSheetsAPI = await axiosAuth(this.state.access_token);
 
       const range = 'Clients!I2';
       const response = await googleSheetsAPI.get(`${SHEET_ID}/values/${range}`);
@@ -317,7 +331,7 @@ class App extends React.Component {
 
   getSheetValuesMatched = async () => {
     try {
-      const googleSheetsAPI = await axiosAuth();
+      const googleSheetsAPI = await axiosAuth(this.state.access_token);
 
       const range = 'Clients!J2:Q2';
       const response = await googleSheetsAPI.get(`${SHEET_ID}/values/${range}`);
@@ -331,7 +345,7 @@ class App extends React.Component {
 
   getSheetValuesDuration = async () => {
     try {
-      const googleSheetsAPI = await axiosAuth();
+      const googleSheetsAPI = await axiosAuth(this.state.access_token);
 
       const range = `Data!H${this.state.valuesMatched[6]}:J${this.state.valuesMatched[6]}`;
       const response = await googleSheetsAPI.get(`${SHEET_ID}/values/${range}`);
@@ -350,7 +364,7 @@ class App extends React.Component {
 
   getSheetValuesSheetDate = async () => {
     try {
-      const googleSheetsAPI = await axiosAuth();
+      const googleSheetsAPI = await axiosAuth(this.state.access_token);
 
       const range = 'Data!L1';
       const response = await googleSheetsAPI.get(`${SHEET_ID}/values/${range}`);
