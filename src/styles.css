@@ -57,3 +57,15 @@ footer {
 .no-btn-focus:focus {
   box-shadow: 0 0 0 0rem;
 }
+
+@media screen and (max-width: 700px) {
+  .user-img {
+    width: 60px;
+    height: 70px;
+  }
+
+  .shrink {
+    width: 20px;
+    height: 30px;
+  }
+}
