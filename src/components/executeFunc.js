@@ -1,9 +1,9 @@
 import { axiosAuth } from '../api/googleSheetsAPI';
 const SHEET_ID = process.env.REACT_APP_SHEET_ID;
 
-export const executeValuesUpdate = async (val, access_token) => {
+export const executeValuesUpdate = async (val) => {
   try {
-    const googleSheetsAPI = await axiosAuth(access_token);
+    const googleSheetsAPI = await axiosAuth();
 
     const range = 'Clients!H2';
     const valueInputOption = 'USER_ENTERED';
@@ -23,9 +23,9 @@ export const executeValuesUpdate = async (val, access_token) => {
 };
 
 // Make sure the client is loaded and sign-in is complete before calling this method.
-export const executeBatchUpdateCutPaste = async (destSheetId, access_token) => {
+export const executeBatchUpdateCutPaste = async (destSheetId) => {
   try {
-    const googleSheetsAPI = await axiosAuth(access_token);
+    const googleSheetsAPI = await axiosAuth();
     const response = await googleSheetsAPI.post(`${SHEET_ID}:batchUpdate`, {
       requests: [
         {
@@ -47,9 +47,9 @@ export const executeBatchUpdateCutPaste = async (destSheetId, access_token) => {
   }
 };
 
-export const executeValuesAppendNewUserData = async (userData, access_token) => {
+export const executeValuesAppendNewUserData = async (userData) => {
   try {
-    const googleSheetsAPI = await axiosAuth(access_token);
+    const googleSheetsAPI = await axiosAuth();
 
     const range = 'Clients!A3';
     const valueInputOption = 'RAW';
@@ -74,13 +74,9 @@ export const executeValuesAppendNewUserData = async (userData, access_token) => 
   }
 };
 
-export const executeValuesAppendCheckIn = async (
-  checkInOut,
-  valuesMatched,
-  access_token
-) => {
+export const executeValuesAppendCheckIn = async (checkInOut, valuesMatched) => {
   try {
-    const googleSheetsAPI = await axiosAuth(access_token);
+    const googleSheetsAPI = await axiosAuth();
 
     const range = 'Data!A2';
     const valueInputOption = 'USER_ENTERED';
@@ -109,11 +105,10 @@ export const executeValuesAppendCheckIn = async (
 export const executeValuesAppendCheckOut = async (
   checkInOut,
   rowNumber,
-  membership,
-  access_token
+  membership
 ) => {
   try {
-    const googleSheetsAPI = await axiosAuth(access_token);
+    const googleSheetsAPI = await axiosAuth();
 
     const range = `Data!G${rowNumber}`;
     const valueInputOption = 'USER_ENTERED';
@@ -140,9 +135,9 @@ export const executeValuesAppendCheckOut = async (
   }
 };
 
-export const executeBatchUpdateAddSheet = async (sheetDate, access_token) => {
+export const executeBatchUpdateAddSheet = async (sheetDate) => {
   try {
-    const googleSheetsAPI = await axiosAuth(access_token);
+    const googleSheetsAPI = await axiosAuth();
     const response = await googleSheetsAPI.post(`${SHEET_ID}:batchUpdate`, {
       requests: [
         {
@@ -167,9 +162,9 @@ export const executeBatchUpdateAddSheet = async (sheetDate, access_token) => {
   }
 };
 
-export const executeValuesAppendAddSheet = async (access_token) => {
+export const executeValuesAppendAddSheet = async () => {
   try {
-    const googleSheetsAPI = await axiosAuth(access_token);
+    const googleSheetsAPI = await axiosAuth();
 
     const range = 'Data!A1';
     const valueInputOption = 'USER_ENTERED';
