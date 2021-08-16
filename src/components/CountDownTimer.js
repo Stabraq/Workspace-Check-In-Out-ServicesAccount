@@ -1,6 +1,6 @@
 import React from 'react';
 
-const CountDownTimer = ({ hoursMinSecs }) => {
+const CountDownTimer = ({ hoursMinSecs, onTimeUp }) => {
   const { hours = 0, minutes = 0, seconds = 60 } = hoursMinSecs;
   const [[hrs, mins, secs], setTime] = React.useState([
     hours,
@@ -10,7 +10,8 @@ const CountDownTimer = ({ hoursMinSecs }) => {
 
   const tick = () => {
     if (hrs === 0 && mins === 0 && secs === 0) {
-    //   reset();
+      //   reset();
+      onTimeUp(true);
     } else if (mins === 0 && secs === 0) {
       setTime([hrs - 1, 59, 59]);
     } else if (secs === 0) {
@@ -20,8 +21,8 @@ const CountDownTimer = ({ hoursMinSecs }) => {
     }
   };
 
-//   const reset = () =>
-//     setTime([parseInt(hours), parseInt(minutes), parseInt(seconds)]);
+  //   const reset = () =>
+  //     setTime([parseInt(hours), parseInt(minutes), parseInt(seconds)]);
 
   React.useEffect(() => {
     const timerId = setInterval(() => tick(), 1000);

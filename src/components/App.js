@@ -47,8 +47,12 @@ class App extends React.Component {
     shrink: false,
     showMain: false,
     shrinkLogo: false,
+    timeUp: false,
   };
 
+  countDownTimerUp = async (value) => {
+    this.setState({ timeUp: value });
+  };
   // Function to Add new Sheet for new day
   getNewSheetId = async () => {
     const newSheetId = await executeBatchUpdateAddSheet(
@@ -371,27 +375,21 @@ class App extends React.Component {
           </button>
         </div>
 
-        {this.state.showMain ? <Main onSubmit={this.onUserSubmit} /> : ''}
+        {this.state.showMain ? <Main onSubmit={this.onUserSubmit} /> : null}
 
         {this.state.showSearchBar ? (
           <SearchBar onSubmit={this.onSearchSubmit} />
-        ) : (
-          ''
-        )}
+        ) : null}
 
         {this.state.showNewUserForm ? (
           <NewUserForm onSubmit={this.onNewUserFormSubmit} />
-        ) : (
-          ''
-        )}
+        ) : null}
 
-        {this.state.loading ? <LoadingSpinner /> : ''}
+        {this.state.loading ? <LoadingSpinner /> : null}
 
         {this.state.showCheckInOut ? (
           <CheckInOut onSubmit={this.onCheckInOutSubmit} />
-        ) : (
-          ''
-        )}
+        ) : null}
 
         <MyModal
           body={this.state.modalBody}
@@ -399,11 +397,13 @@ class App extends React.Component {
         />
         <div className='container'>
           {this.state.firstLoad ? (
-            <CountDownTimer hoursMinSecs={hoursMinSecs} />
-          ) : (
-            ''
-          )}
+            <CountDownTimer
+              hoursMinSecs={hoursMinSecs}
+              onTimeUp={this.countDownTimerUp}
+            />
+          ) : null}
           {/* <button onClick={this.getNewSheetId}>AddSheet</button> */}
+          {this.state.timeUp ? <div>Time Up</div> : null}
         </div>
       </div>
     );
