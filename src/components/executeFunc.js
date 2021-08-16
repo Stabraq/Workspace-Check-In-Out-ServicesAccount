@@ -22,6 +22,33 @@ export const executeValuesUpdate = async (val) => {
   }
 };
 
+export const executeBatchUpdateAddSheet = async (sheetDate) => {
+  try {
+    const googleSheetsAPI = await axiosAuth();
+    const response = await googleSheetsAPI.post(`${SHEET_ID}:batchUpdate`, {
+      requests: [
+        {
+          addSheet: {
+            properties: {
+              title: sheetDate,
+              rightToLeft: true,
+            },
+          },
+        },
+      ],
+    });
+
+    console.log(
+      'Response executeBatchUpdateAddSheet',
+      response.data.replies[0].addSheet.properties.sheetId
+    );
+    return response.data.replies[0].addSheet.properties.sheetId;
+  } catch (err) {
+    console.error('Execute error', err.data.error.message);
+    return false;
+  }
+};
+
 export const executeBatchUpdateCutPaste = async (destSheetId) => {
   try {
     const googleSheetsAPI = await axiosAuth();
@@ -41,6 +68,40 @@ export const executeBatchUpdateCutPaste = async (destSheetId) => {
       ],
     });
     console.log('Response executeBatchUpdateCutPaste', response);
+  } catch (err) {
+    console.error('Execute error', err);
+  }
+};
+
+export const executeValuesAppendAddSheet = async () => {
+  try {
+    const googleSheetsAPI = await axiosAuth();
+
+    const range = 'Data!A1';
+    const valueInputOption = 'USER_ENTERED';
+    const response = await googleSheetsAPI.post(
+      `${SHEET_ID}/values/${range}:append`,
+      {
+        majorDimension: 'COLUMNS',
+        values: [
+          ['Name'],
+          ['Mobile No.'],
+          ['E-Mail'],
+          ['Membership'],
+          ['Check In'],
+          ['CheckIn Time'],
+          ['CheckOut Time'],
+          ['Duration'],
+          ['Approx. Duration'],
+          ['Cost'],
+          ['Check Out'],
+          [new Date().toLocaleDateString()],
+        ],
+      },
+      { params: { valueInputOption: valueInputOption } }
+    );
+
+    console.log('Response executeValuesAppendAddSheet', response);
   } catch (err) {
     console.error('Execute error', err);
   }
@@ -129,67 +190,6 @@ export const executeValuesAppendCheckOut = async (
     );
 
     console.log('Response executeValuesAppendCheckOut', response);
-  } catch (err) {
-    console.error('Execute error', err);
-  }
-};
-
-export const executeBatchUpdateAddSheet = async (sheetDate) => {
-  try {
-    const googleSheetsAPI = await axiosAuth();
-    const response = await googleSheetsAPI.post(`${SHEET_ID}:batchUpdate`, {
-      requests: [
-        {
-          addSheet: {
-            properties: {
-              title: sheetDate,
-              rightToLeft: true,
-            },
-          },
-        },
-      ],
-    });
-
-    console.log(
-      'Response executeBatchUpdateAddSheet',
-      response.data.replies[0].addSheet.properties.sheetId
-    );
-    return response.data.replies[0].addSheet.properties.sheetId;
-  } catch (err) {
-    console.error('Execute error', err.data.error.message);
-    return false;
-  }
-};
-
-export const executeValuesAppendAddSheet = async () => {
-  try {
-    const googleSheetsAPI = await axiosAuth();
-
-    const range = 'Data!A1';
-    const valueInputOption = 'USER_ENTERED';
-    const response = await googleSheetsAPI.post(
-      `${SHEET_ID}/values/${range}:append`,
-      {
-        majorDimension: 'COLUMNS',
-        values: [
-          ['Name'],
-          ['Mobile No.'],
-          ['E-Mail'],
-          ['Membership'],
-          ['Check In'],
-          ['CheckIn Time'],
-          ['CheckOut Time'],
-          ['Duration'],
-          ['Approx. Duration'],
-          ['Cost'],
-          ['Check Out'],
-          [new Date().toLocaleDateString()],
-        ],
-      },
-      { params: { valueInputOption: valueInputOption } }
-    );
-
-    console.log('Response executeValuesAppendAddSheet', response);
   } catch (err) {
     console.error('Execute error', err);
   }

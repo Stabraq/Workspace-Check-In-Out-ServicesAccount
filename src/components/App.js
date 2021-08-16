@@ -2,12 +2,12 @@ import React from 'react';
 import { axiosAuth } from '../api/googleSheetsAPI';
 import {
   executeValuesUpdate,
-  executeValuesAppendNewUserData,
-  executeValuesAppendCheckIn,
-  executeValuesAppendCheckOut,
   executeBatchUpdateAddSheet,
   executeBatchUpdateCutPaste,
   executeValuesAppendAddSheet,
+  executeValuesAppendNewUserData,
+  executeValuesAppendCheckIn,
+  executeValuesAppendCheckOut,
   getSheetValues,
 } from './executeFunc';
 import Main from './Main';
