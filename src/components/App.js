@@ -140,7 +140,13 @@ class App extends React.Component {
       modalBody: (
         <div className='text-center'>
           {this.state.numberExists.includes('Exists') ? (
-            <h1>Welcome Back {this.state.valuesMatched[1]}</h1>
+            <h1>
+              {/[\u0600-\u06FF]/.test(this.state.valuesMatched[1])
+                ? 'مرحبا'
+                : 'Welcome Back'}
+              <br />
+              {this.state.valuesMatched[1]}
+            </h1>
           ) : (
             <div className='text-center'>
               <p>{this.state.numberExists}</p>
@@ -263,9 +269,7 @@ class App extends React.Component {
           this.state.valuesMatched[3]
         );
         const getSheetValuesDurationRange = `Data!H${this.state.valuesMatched[6]}:J${this.state.valuesMatched[6]}`;
-        const resData = await getSheetValues(
-          getSheetValuesDurationRange
-        );
+        const resData = await getSheetValues(getSheetValuesDurationRange);
         this.setState({
           duration: resData[0],
           approxDuration: resData[1],
