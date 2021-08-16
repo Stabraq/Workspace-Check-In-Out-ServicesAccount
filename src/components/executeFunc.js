@@ -16,13 +16,12 @@ export const executeValuesUpdate = async (val) => {
       { params: { valueInputOption: valueInputOption } }
     );
 
-    console.log('Response', response);
+    console.log('Response executeValuesUpdate', response);
   } catch (err) {
     console.error('Execute error', err);
   }
 };
 
-// Make sure the client is loaded and sign-in is complete before calling this method.
 export const executeBatchUpdateCutPaste = async (destSheetId) => {
   try {
     const googleSheetsAPI = await axiosAuth();
@@ -41,7 +40,7 @@ export const executeBatchUpdateCutPaste = async (destSheetId) => {
         },
       ],
     });
-    console.log('Response', response);
+    console.log('Response executeBatchUpdateCutPaste', response);
   } catch (err) {
     console.error('Execute error', err);
   }
@@ -68,7 +67,7 @@ export const executeValuesAppendNewUserData = async (userData) => {
       { params: { valueInputOption: valueInputOption } }
     );
 
-    console.log('Response', response);
+    console.log('Response executeValuesAppendNewUserData', response);
   } catch (err) {
     console.error('Execute error', err);
   }
@@ -96,7 +95,7 @@ export const executeValuesAppendCheckIn = async (checkInOut, valuesMatched) => {
       { params: { valueInputOption: valueInputOption } }
     );
 
-    console.log('Response', response);
+    console.log('Response executeValuesAppendCheckIn', response);
   } catch (err) {
     console.error('Execute error', err);
   }
@@ -129,7 +128,7 @@ export const executeValuesAppendCheckOut = async (
       { params: { valueInputOption: valueInputOption } }
     );
 
-    console.log('Response', response);
+    console.log('Response executeValuesAppendCheckOut', response);
   } catch (err) {
     console.error('Execute error', err);
   }
@@ -152,7 +151,7 @@ export const executeBatchUpdateAddSheet = async (sheetDate) => {
     });
 
     console.log(
-      'Response',
+      'Response executeBatchUpdateAddSheet',
       response.data.replies[0].addSheet.properties.sheetId
     );
     return response.data.replies[0].addSheet.properties.sheetId;
@@ -190,7 +189,20 @@ export const executeValuesAppendAddSheet = async () => {
       { params: { valueInputOption: valueInputOption } }
     );
 
-    console.log('Response', response);
+    console.log('Response executeValuesAppendAddSheet', response);
+  } catch (err) {
+    console.error('Execute error', err);
+  }
+};
+
+export const getSheetValues = async (range) => {
+  try {
+    const googleSheetsAPI = await axiosAuth();
+
+    const response = await googleSheetsAPI.get(`${SHEET_ID}/values/${range}`);
+
+    console.log('Response getSheetValuesDuration', response.data.values[0]);
+    return response.data.values[0];
   } catch (err) {
     console.error('Execute error', err);
   }

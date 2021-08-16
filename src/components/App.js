@@ -8,6 +8,7 @@ import {
   executeBatchUpdateAddSheet,
   executeBatchUpdateCutPaste,
   executeValuesAppendAddSheet,
+  getSheetValues,
 } from './executeFunc';
 import Main from './Main';
 import SearchBar from './SearchBar';
@@ -20,8 +21,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import '../styles.css';
 import { Modal } from 'bootstrap';
-
-const SHEET_ID = process.env.REACT_APP_SHEET_ID;
 
 const hoursMinSecs = { hours: 0, minutes: 59, seconds: 0 };
 
@@ -92,7 +91,9 @@ class App extends React.Component {
     }
 
     // Check to Add new Sheet for new day
-    await this.getSheetValuesSheetDate();
+    const getSheetValuesSheetDateRange = 'Data!L1';
+    const sheetDate = await getSheetValues(getSheetValuesSheetDateRange);
+    this.setState({ sheetDate: sheetDate });
 
     const dateOne = this.state.sheetDate;
     const dateTwo = new Date().toLocaleDateString();
@@ -104,9 +105,13 @@ class App extends React.Component {
 
     // Search for the user by mobile number
     await executeValuesUpdate(term);
-    await this.getSheetValues();
+    const getSheetValuesNumberExistsRange = 'Clients!I2';
+    const numberExists = await getSheetValues(getSheetValuesNumberExistsRange);
+    this.setState({ numberExists: numberExists });
     if (this.state.numberExists.includes('Exists')) {
-      await this.getSheetValuesMatched();
+      const getSheetValuesMatchedRange = 'Clients!J2:Q2';
+      const valuesMatched = await getSheetValues(getSheetValuesMatchedRange);
+      this.setState({ valuesMatched: valuesMatched });
     }
 
     // Hide LoadingSpinner
@@ -257,7 +262,15 @@ class App extends React.Component {
           this.state.valuesMatched[6],
           this.state.valuesMatched[3]
         );
-        await this.getSheetValuesDuration();
+        const getSheetValuesDurationRange = `Data!H${this.state.valuesMatched[6]}:J${this.state.valuesMatched[6]}`;
+        const resData = await getSheetValues(
+          getSheetValuesDurationRange
+        );
+        this.setState({
+          duration: resData[0],
+          approxDuration: resData[1],
+          cost: resData[2],
+        });
         this.setState({
           modalBody: (
             <div>
@@ -295,67 +308,6 @@ class App extends React.Component {
   componentDidMount() {
     this.loadApiScript();
   }
-
-  getSheetValues = async () => {
-    try {
-      const googleSheetsAPI = await axiosAuth();
-
-      const range = 'Clients!I2';
-      const response = await googleSheetsAPI.get(`${SHEET_ID}/values/${range}`);
-
-      console.log('Response', response.data.values[0]);
-      this.setState({ numberExists: response.data.values[0] });
-    } catch (err) {
-      console.error('Execute error', err);
-    }
-  };
-
-  getSheetValuesMatched = async () => {
-    try {
-      const googleSheetsAPI = await axiosAuth();
-
-      const range = 'Clients!J2:Q2';
-      const response = await googleSheetsAPI.get(`${SHEET_ID}/values/${range}`);
-
-      console.log('Response', response.data.values[0]);
-      this.setState({ valuesMatched: response.data.values[0] });
-    } catch (err) {
-      console.error('Execute error', err);
-    }
-  };
-
-  getSheetValuesDuration = async () => {
-    try {
-      const googleSheetsAPI = await axiosAuth();
-
-      const range = `Data!H${this.state.valuesMatched[6]}:J${this.state.valuesMatched[6]}`;
-      const response = await googleSheetsAPI.get(`${SHEET_ID}/values/${range}`);
-
-      const resData = await response.data.values[0];
-      console.log('Response', response.data.values[0]);
-      this.setState({
-        duration: resData[0],
-        approxDuration: resData[1],
-        cost: resData[2],
-      });
-    } catch (err) {
-      console.error('Execute error', err);
-    }
-  };
-
-  getSheetValuesSheetDate = async () => {
-    try {
-      const googleSheetsAPI = await axiosAuth();
-
-      const range = 'Data!L1';
-      const response = await googleSheetsAPI.get(`${SHEET_ID}/values/${range}`);
-
-      console.log('Response', response.data.values[0]);
-      this.setState({ sheetDate: response.data.values[0] });
-    } catch (err) {
-      console.error('Execute error', err);
-    }
-  };
 
   render() {
     const shrinkLogo = this.state.shrinkLogo ? 'shrink-logo' : '';
