@@ -181,6 +181,13 @@ class App extends React.Component {
     });
     let myModal = new Modal(document.getElementById('exampleModal'), {});
     myModal.show();
+    await executeValuesUpdate(userData.mobile);
+    const getSheetValuesMatchedRange = 'Clients!J2:Q2';
+    const valuesMatched = await getSheetValues(getSheetValuesMatchedRange);
+    this.setState({ valuesMatched: valuesMatched });
+    this.setState({
+      showCheckInOut: true,
+    });
   };
 
   checkDateToAddSheet = async (dataDateOne, dataDateTwo) => {
