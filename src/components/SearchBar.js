@@ -20,7 +20,7 @@ class SearchBar extends React.Component {
           <div className='field'>
             <label>Search By Mobile Number</label>
             <input
-              type='text'
+              type='tel'
               name='mobile'
               value={this.state.term}
               onChange={(e) => this.setState({ term: e.target.value })}
