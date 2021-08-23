@@ -85,7 +85,7 @@ class NewUserForm extends React.Component {
             )}
             <label>Mobile Number</label>
             <input
-              type='text'
+              type='tel'
               name='mobile'
               placeholder='01xxxxxxxxx'
               onChange={this.myChangeHandler}
