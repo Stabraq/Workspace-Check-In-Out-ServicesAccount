@@ -57,7 +57,12 @@ class NewUserForm extends React.Component {
         <form className='ui form'>
           <div>
             {this.state.userName !== '' && this.state.userName.length > 3 ? (
-              <h1>Hello {this.state.userName}</h1>
+              <h1>
+                {/[\u0600-\u06FF]/.test(this.state.userName)
+                  ? 'مرحبا '
+                  : 'Hello '}
+                {this.state.userName}
+              </h1>
             ) : (
               ''
             )}
