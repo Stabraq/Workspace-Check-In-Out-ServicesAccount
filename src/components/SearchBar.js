@@ -4,6 +4,16 @@ import { checkForMobNum } from './validation';
 class SearchBar extends React.Component {
   state = { term: '', validNumber: null };
 
+  componentDidMount() {
+    // http://localhost:3000/main/user/?mobile=0100xxxxxxx
+    let mobile = new URLSearchParams(window.location.search).get('mobile');
+
+    if (mobile) {
+      this.setState({ term: mobile });
+      this.props.onSubmit(mobile);
+    }
+  }
+
   onFormSubmit = async (event) => {
     event.preventDefault();
     const validNumber = await checkForMobNum(this.state.term);
