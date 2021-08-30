@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/checkinout-build/static/css/main.63fa152a.chunk.css",
-    "main.js": "/checkinout-build/static/js/main.2abefd90.chunk.js",
-    "main.js.map": "/checkinout-build/static/js/main.2abefd90.chunk.js.map",
+    "main.js": "/checkinout-build/static/js/main.a650924b.chunk.js",
+    "main.js.map": "/checkinout-build/static/js/main.a650924b.chunk.js.map",
     "runtime-main.js": "/checkinout-build/static/js/runtime-main.f864c4fe.js",
     "runtime-main.js.map": "/checkinout-build/static/js/runtime-main.f864c4fe.js.map",
     "static/css/2.4be38407.chunk.css": "/checkinout-build/static/css/2.4be38407.chunk.css",
@@ -18,6 +18,6 @@
     "static/css/2.4be38407.chunk.css",
     "static/js/2.dce4fab3.chunk.js",
     "static/css/main.63fa152a.chunk.css",
-    "static/js/main.2abefd90.chunk.js"
+    "static/js/main.a650924b.chunk.js"
   ]
 }
