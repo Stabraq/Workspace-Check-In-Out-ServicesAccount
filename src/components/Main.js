@@ -1,51 +1,29 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 class Main extends React.Component {
   state = {
-    showSearchBar: false,
-    showNewUserForm: false,
     showCheckInOut: false,
     shrink: false,
   };
 
   onFormSubmitUser = async () => {
-    this.setState(
-      {
-        showSearchBar: !this.state.showSearchBar,
-        showNewUserForm: false,
-        shrink: true,
-      },
-      function () {
-        this.props.onSubmit({
-          showSearchBar: this.state.showSearchBar,
-          showNewUserForm: this.state.showNewUserForm,
-          showCheckInOut: this.state.showCheckInOut,
-          shrink: this.state.shrink,
-        });
-      }
-    );
+    this.setState({ shrink: true }, this.callBackFunc);
   };
   onFormSubmitNewUser = async () => {
-    this.setState(
-      {
-        showNewUserForm: !this.state.showNewUserForm,
-        showSearchBar: false,
-        showCheckInOut: false,
-        shrink: true,
-      },
-      function () {
-        this.props.onSubmit({
-          showSearchBar: this.state.showSearchBar,
-          showNewUserForm: this.state.showNewUserForm,
-          showCheckInOut: this.state.showCheckInOut,
-          shrink: this.state.shrink,
-        });
-      }
-    );
+    this.setState({ showCheckInOut: false, shrink: true }, this.callBackFunc);
   };
 
+  callBackFunc() {
+    this.props.onSubmit({
+      showCheckInOut: this.state.showCheckInOut,
+      shrink: this.state.shrink,
+    });
+  }
+
   render() {
-    const shrink = this.state.shrink ? 'shrink' : '';
+    const shrink =
+      this.state.shrink || window.location.pathname !== '/main' ? 'shrink' : '';
     return (
       <div>
         {/* <img
@@ -58,30 +36,34 @@ class Main extends React.Component {
         <div className='row ui container mt-3'>
           <nav className='navbar navbar-light'>
             <form className='container-fluid justify-content-center'>
-              <button
-                className='btn btn-outline-success me-2 bg-dark'
-                type='button'
-                onClick={this.onFormSubmitUser}
-              >
-                <img
-                  className={`mx-auto d-block user-img ${shrink}`}
-                  src='user-member.png'
-                  alt='user-member'
-                />
-                User
-              </button>
-              <button
-                className='btn btn-outline-success me-2 bg-dark'
-                type='button'
-                onClick={this.onFormSubmitNewUser}
-              >
-                <img
-                  className={`mx-auto d-block user-img ${shrink}`}
-                  src='user-new-user.png'
-                  alt='user-new-user'
-                />
-                New User
-              </button>
+              <Link to='/main/user'>
+                <button
+                  className='btn btn-outline-success me-2 bg-dark'
+                  type='button'
+                  onClick={this.onFormSubmitUser}
+                >
+                  <img
+                    className={`mx-auto d-block user-img ${shrink}`}
+                    src='/user-member.png'
+                    alt='user-member'
+                  />
+                  User
+                </button>
+              </Link>
+              <Link to='/main/new-user'>
+                <button
+                  className='btn btn-outline-success me-2 bg-dark'
+                  type='button'
+                  onClick={this.onFormSubmitNewUser}
+                >
+                  <img
+                    className={`mx-auto d-block user-img ${shrink}`}
+                    src='/user-new-user.png'
+                    alt='user-new-user'
+                  />
+                  New User
+                </button>
+              </Link>
             </form>
           </nav>
         </div>

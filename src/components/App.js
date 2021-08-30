@@ -21,6 +21,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import '../styles.css';
 import { Modal } from 'bootstrap';
+import { BrowserRouter, Route, Link } from 'react-router-dom';
 
 const hoursMinSecs = { hours: 0, minutes: 59, seconds: 0 };
 
@@ -40,11 +41,8 @@ class App extends React.Component {
     modalBody: '',
     modalCloseAction: '',
     sheetDate: '',
-    showNewUserForm: false,
-    showSearchBar: false,
     showCheckInOut: false,
     shrink: false,
-    showMain: false,
     shrinkLogo: false,
     timeUp: false,
   };
@@ -65,17 +63,14 @@ class App extends React.Component {
     await executeValuesAppendAddSheet();
   };
 
-  showMainPage = async () => {
+  doShrinkLogo = async () => {
     this.setState({
-      showMain: true,
       shrinkLogo: true,
     });
   };
 
   onUserSubmit = async (mainData) => {
     this.setState({
-      showNewUserForm: mainData.showNewUserForm,
-      showSearchBar: mainData.showSearchBar,
       showCheckInOut: mainData.showCheckInOut,
       shrink: mainData.shrink,
     });
@@ -117,21 +112,13 @@ class App extends React.Component {
     // Hide LoadingSpinner
     this.setState({ loading: false });
 
-    // Toggle between showNewUserForm & showSearchBar & showCheckInOut
-    this.state.numberExists.includes('')
+    // Toggle showCheckInOut
+    this.state.numberExists.includes('') ||
+    this.state.numberExists.includes('Not Exists')
       ? this.setState({
-          showNewUserForm: false,
-          showSearchBar: false,
-          showCheckInOut: false,
-        })
-      : this.state.numberExists.includes('Not Exists')
-      ? this.setState({
-          showNewUserForm: true,
-          showSearchBar: false,
           showCheckInOut: false,
         })
       : this.setState({
-          showNewUserForm: false,
           showCheckInOut: true,
         });
 
@@ -154,6 +141,9 @@ class App extends React.Component {
           )}
         </div>
       ),
+      modalCloseAction: this.state.numberExists.includes('Not Exists')
+        ? 'NEW-USER'
+        : null,
     });
     let myModal = new Modal(document.getElementById('exampleModal'), {});
     if (
@@ -210,7 +200,7 @@ class App extends React.Component {
               <h1>You already Checked In</h1>
             </div>
           ),
-          modalCloseAction: 'refresh',
+          modalCloseAction: 'REFRESH',
         });
         let myModal = new Modal(document.getElementById('exampleModal'), {});
         myModal.show();
@@ -221,14 +211,15 @@ class App extends React.Component {
           modalBody: (
             <div>
               <h1>Checked In Successfully</h1>
-              {this.state.valuesMatched[3].includes('Not Member') === false ? (
+              {this.state.valuesMatched[3].includes('Not Member') === false &&
+              this.state.valuesMatched[4].includes('/') ? (
                 <div>
                   <h1>Expiry Date: {this.state.valuesMatched[4]}</h1>
                   <h1>
-                    Remaining Days:{' '}
+                    Remaining Days:
                     {this.state.valuesMatched[5].includes('-')
                       ? `Expired ${this.state.valuesMatched[5]}`
-                      : this.state.valuesMatched[5]}{' '}
+                      : ` ${this.state.valuesMatched[5]} `}
                     Days
                   </h1>
                 </div>
@@ -237,7 +228,7 @@ class App extends React.Component {
               )}
             </div>
           ),
-          modalCloseAction: 'refresh',
+          modalCloseAction: 'REFRESH',
         });
         let myModal = new Modal(document.getElementById('exampleModal'), {});
         myModal.show();
@@ -252,7 +243,7 @@ class App extends React.Component {
               <h1>You already Checked Out</h1>
             </div>
           ),
-          modalCloseAction: 'refresh',
+          modalCloseAction: 'REFRESH',
         });
         let myModal = new Modal(document.getElementById('exampleModal'), {});
         myModal.show();
@@ -264,7 +255,7 @@ class App extends React.Component {
               <h1>{this.state.valuesMatched[7]}</h1>
             </div>
           ),
-          modalCloseAction: 'refresh',
+          modalCloseAction: 'REFRESH',
         });
         let myModal = new Modal(document.getElementById('exampleModal'), {});
         myModal.show();
@@ -300,7 +291,7 @@ class App extends React.Component {
               )}
             </div>
           ),
-          modalCloseAction: 'refresh',
+          modalCloseAction: 'REFRESH',
         });
         let myModal = new Modal(document.getElementById('exampleModal'), {});
         myModal.show();
@@ -321,54 +312,66 @@ class App extends React.Component {
   }
 
   render() {
-    const shrinkLogo = this.state.shrinkLogo ? 'shrink-logo' : '';
+    const shrinkLogo =
+      this.state.shrinkLogo || window.location.pathname !== '/'
+        ? 'shrink-logo'
+        : '';
     return (
-      <div className='ui container mt-3'>
-        <div className='text-center'>
-          <button
-            className='btn me-2 no-btn-focus'
-            type='button'
-            onClick={this.showMainPage}
-          >
-            <img
-              className={`mx-auto d-block logo-img ${shrinkLogo}`}
-              src='logo.png'
-              alt='Logo'
-            />
-          </button>
-        </div>
+      <BrowserRouter>
+        <div className='ui container mt-3'>
+          <Link to='/main'>
+            <div className='text-center'>
+              <button
+                className='btn me-2 no-btn-focus'
+                type='button'
+                onClick={this.doShrinkLogo}
+              >
+                <img
+                  className={`mx-auto d-block logo-img ${shrinkLogo}`}
+                  src='/logo.png'
+                  alt='Logo'
+                />
+              </button>
+            </div>
+          </Link>
 
-        {this.state.showMain ? <Main onSubmit={this.onUserSubmit} /> : null}
+          <Route
+            path='/main'
+            children={<Main onSubmit={this.onUserSubmit} />}
+          ></Route>
+          <Route
+            path='/main/user'
+            exact
+            children={<SearchBar onSubmit={this.onSearchSubmit} />}
+          ></Route>
+          <Route
+            path='/main/new-user'
+            exact
+            children={<NewUserForm onSubmit={this.onNewUserFormSubmit} />}
+          ></Route>
 
-        {this.state.showSearchBar ? (
-          <SearchBar onSubmit={this.onSearchSubmit} />
-        ) : null}
+          {this.state.loading ? <LoadingSpinner /> : null}
 
-        {this.state.showNewUserForm ? (
-          <NewUserForm onSubmit={this.onNewUserFormSubmit} />
-        ) : null}
-
-        {this.state.loading ? <LoadingSpinner /> : null}
-
-        {this.state.showCheckInOut ? (
-          <CheckInOut onSubmit={this.onCheckInOutSubmit} />
-        ) : null}
-
-        <MyModal
-          body={this.state.modalBody}
-          closeAction={this.state.modalCloseAction}
-        />
-        <div className='container'>
-          {this.state.firstLoad ? (
-            <CountDownTimer
-              hoursMinSecs={hoursMinSecs}
-              onTimeUp={this.countDownTimerUp}
-            />
+          {this.state.showCheckInOut ? (
+            <CheckInOut onSubmit={this.onCheckInOutSubmit} />
           ) : null}
-          {/* <button onClick={this.getNewSheetId}>AddSheet</button> */}
-          {this.state.timeUp ? <div>Time Up</div> : null}
+
+          <MyModal
+            body={this.state.modalBody}
+            closeAction={this.state.modalCloseAction}
+          />
+          <div className='container'>
+            {this.state.firstLoad ? (
+              <CountDownTimer
+                hoursMinSecs={hoursMinSecs}
+                onTimeUp={this.countDownTimerUp}
+              />
+            ) : null}
+            {/* <button onClick={this.getNewSheetId}>AddSheet</button> */}
+            {this.state.timeUp ? <div>Time Up</div> : null}
+          </div>
         </div>
-      </div>
+      </BrowserRouter>
     );
   }
 }

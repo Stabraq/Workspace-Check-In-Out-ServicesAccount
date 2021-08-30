@@ -1,6 +1,14 @@
 import React from 'react';
 
 class MyModal extends React.Component {
+  openPage(event, href) {
+    event.preventDefault();
+    window.history.pushState({}, '', href);
+
+    const navEvent = new PopStateEvent('popstate');
+    window.dispatchEvent(navEvent);
+  }
+
   render() {
     return (
       <div>
@@ -30,11 +38,16 @@ class MyModal extends React.Component {
                   type='button'
                   className='btn btn-stabraq'
                   data-bs-dismiss='modal'
-                  onClick={
-                    this.props.closeAction.includes('refresh')
-                      ? () => window.location.reload()
-                      : () => ''
-                  }
+                  onClick={(event) => {
+                    switch (this.props.closeAction) {
+                      case 'REFRESH':
+                        return (window.location.pathname = '/');
+                      case 'NEW-USER':
+                        return this.openPage(event, '/main/new-user');
+                      default:
+                        return '';
+                    }
+                  }}
                 >
                   Close
                 </button>
