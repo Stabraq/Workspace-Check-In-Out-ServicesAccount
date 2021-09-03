@@ -12,7 +12,7 @@ class SearchBar extends React.Component {
 
     if (mobile) {
       this.setState({ term: mobile });
-      this.props.onSubmit(mobile);
+      setTimeout(() => this.props.onSubmit(mobile), 1000);
     }
   }
 
