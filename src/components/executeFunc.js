@@ -182,7 +182,9 @@ export const executeValuesAppendCheckOut = async (
           [
             `=IF(H${rowNumber}*24<1,1,IF(OR(AND(H${rowNumber}*24-INT(H${rowNumber}*24)<=0.1),AND(H${rowNumber}*24-INT(H${rowNumber}*24)>0.5,H${rowNumber}*24-INT(H${rowNumber}*24)<=0.59)),FLOOR(H${rowNumber},"00:30")*24,CEILING(H${rowNumber},"00:30")*24))`,
           ],
-          membership.includes('Not Member') ? [`=IF(I${rowNumber}>=6,60,I${rowNumber}*10)`] : [''],
+          membership.includes('Not Member')
+            ? [`=IF(I${rowNumber}>=6,60,I${rowNumber}*10)`]
+            : [''],
           [checkInOut],
         ],
       },
@@ -201,7 +203,7 @@ export const getSheetValues = async (range) => {
 
     const response = await googleSheetsAPI.get(`${SHEET_ID}/values/${range}`);
 
-    console.log('Response getSheetValuesDuration', response.data.values[0]);
+    console.log('Response getSheetValues', range, response.data.values[0]);
     return response.data.values[0];
   } catch (err) {
     console.error('Execute error', err);
