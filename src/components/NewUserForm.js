@@ -122,8 +122,8 @@ class NewUserForm extends React.Component {
                 <option value='Green'>Green</option>
                 <option value='Orange'>Orange</option>
                 <option value='Business'>Business</option>
-                <option value='Ten Days'>Ten Days</option>
-                <option value='Hours'>Hours</option>
+                <option value='10 Days'>Ten Days</option>
+                <option value='Hours Membership'>Hours</option>
               </select>
             </label>
             {this.state.validate.membership === null ||
