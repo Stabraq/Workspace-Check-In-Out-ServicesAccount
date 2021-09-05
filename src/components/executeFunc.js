@@ -150,7 +150,7 @@ export const executeValuesAppendCheckIn = async (checkInOut, valuesMatched) => {
           [valuesMatched[2]],
           [valuesMatched[3]],
           [checkInOut],
-          [new Date().toLocaleTimeString()],
+          [new Date().toLocaleTimeString('en-US')],
         ],
       },
       { params: { valueInputOption: valueInputOption } }
@@ -177,7 +177,7 @@ export const executeValuesAppendCheckOut = async (
       {
         majorDimension: 'COLUMNS',
         values: [
-          [new Date().toLocaleTimeString()],
+          [new Date().toLocaleTimeString('en-US')],
           [`=TEXT(G${rowNumber}-F${rowNumber},"h:mm")`],
           [
             `=IF(H${rowNumber}*24<1,1,IF(OR(AND(H${rowNumber}*24-INT(H${rowNumber}*24)<=0.1),AND(H${rowNumber}*24-INT(H${rowNumber}*24)>0.5,H${rowNumber}*24-INT(H${rowNumber}*24)<=0.59)),FLOOR(H${rowNumber},"00:30")*24,CEILING(H${rowNumber},"00:30")*24))`,
