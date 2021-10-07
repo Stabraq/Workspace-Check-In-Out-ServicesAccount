@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { authenticate } from '../components/auth';
+import { authenticate } from './auth';
 
 export const axiosAuth = async () => {
   try {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { axiosAuth } from '../api/googleSheetsAPI';
+import { axiosAuth } from '@api/googleSheetsAPI';
 import {
   executeValuesUpdate,
   executeBatchUpdateAddSheet,
