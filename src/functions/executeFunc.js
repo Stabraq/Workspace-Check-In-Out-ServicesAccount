@@ -1,4 +1,4 @@
-import { axiosAuth } from '@api/googleSheetsAPI';
+import { axiosAuth } from '../api/googleSheetsAPI';
 const SHEET_ID = process.env.REACT_APP_SHEET_ID;
 
 export const executeValuesUpdate = async (val) => {
