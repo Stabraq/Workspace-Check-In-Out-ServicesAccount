@@ -9,7 +9,7 @@ import {
   executeValuesAppendCheckIn,
   executeValuesAppendCheckOut,
   getSheetValues,
-} from './executeFunc';
+} from '../functions/executeFunc';
 import Main from './Main';
 import SearchBar from './SearchBar';
 import NewUserForm from './NewUserForm';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { checkForMobNum } from './validation';
+import { checkForMobNum } from '../functions/validation';
 
 class SearchBar extends React.Component {
   state = { term: '', validNumber: null };
