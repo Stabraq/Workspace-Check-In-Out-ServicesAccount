@@ -4,7 +4,7 @@ import {
   checkForEmail,
   checkForUserName,
   checkForMembership,
-} from '../functions/validation';
+} from './validation';
 
 class NewUserForm extends React.Component {
   state = {
